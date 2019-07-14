@@ -1,0 +1,1 @@
+let image = new Image(600, 600);

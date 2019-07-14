@@ -4,7 +4,7 @@
   "description": "Create heatmap of a website",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/vuchuc781999/heatmap/issues"
   },
-  "homepage": "https://github.com/vuchuc781999/heatmap#readme"
+  "homepage": "https://github.com/vuchuc781999/heatmap#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.4",
+    "nodemon": "^1.19.1"
+  }
 }
