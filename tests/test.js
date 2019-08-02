@@ -1,1 +1,1 @@
-let image = new Image(600, 600);
+console.log(-3%10);

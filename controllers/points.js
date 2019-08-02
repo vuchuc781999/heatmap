@@ -1,25 +1,40 @@
 const Points = require('../models/points')
 
 exports.savePoints = async (req, res) => {
-  let msg = 'Saved successfully !!!';
+  let msg;
 
   try {
-    const points = await Points.find({
+    const _points = await Points.find({
       hostname: req.body.hostname,
       pathname: req.body.pathname
     }).limit(1);
 
-    points[0].coordinates.push(...req.body.coordinates);
-    points[0].save();
+    if (_points.length == 0) {
+      const points = new Points({
+        hostname: req.body.hostname,
+        pathname: req.body.pathname,
+        coordinates: [...req.body.coordinates]
+      });
+      points.save();
+      msg = "Created and saved successfully !!!";
+    } else {
+      _points[0].coordinates.push(...req.body.coordinates);
+      _points[0].save();
+      msg = "Saved successfully !!!";
+    }
   } catch(err) {
     msg = "Can't save !!!";
     console.error(err);
   };
-
+  console.log(msg);
   res.send(msg);
 }
 
 exports.createPoints = async (req, res) => {
+  if (!req.query.hostname && !req.query.pathname) {
+    return res.send("Hostname or Pathname is required !!!");
+  }
+
   const _points = await Points.find({
     hostname: req.query.hostname,
     pathname: req.query.pathname
@@ -40,6 +55,10 @@ exports.createPoints = async (req, res) => {
 }
 
 exports.getPoints = async (req, res) => {
+  if (!req.query.hostname && !req.query.pathname) {
+    return res.send("Hostname or Pathname is required !!!");
+  }
+
   try {
     const points = await Points.find({
       hostname: req.query.hostname,
