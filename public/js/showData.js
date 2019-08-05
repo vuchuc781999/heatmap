@@ -4,13 +4,11 @@
     const res = await fetch(url);
     const data = await res.json();
     const coordinates = data.coordinates;
-
-    console.log(coordinates);
     
     let width = 0;
     let height = 0;
 
-    for (let i = 0; i < coordinates.length; i++) {
+    for (let i = coordinates.length - 1; i >= 0; i--) {
       if (coordinates[i].x > width) {
         width = coordinates[i].x;
       }
@@ -23,6 +21,10 @@
     canvas.height = height;
     canvas.width = width;
     canvas.style.position = "absolute";
+    canvas.style.top = "0px";
+    canvas.style.left = "0px";
+    canvas.style.display = "none";
+    canvas.id = "heat-map";
 
     const ctx = canvas.getContext("2d");
     const imgData = ctx.createImageData(width, height);

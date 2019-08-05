@@ -14,12 +14,6 @@ const coordinateSchema = new Schema({
     min: 0,
     default: 0,
     required: true
-  },
-  n: {
-    type: Number,
-    min: 0,
-    default: 0,
-    required: true
   }
 });
 
