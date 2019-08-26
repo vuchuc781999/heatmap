@@ -1,11 +1,12 @@
 const express = require('express');
 const index = require('../controllers/index');
-
-const points = require('../routers/points');
+const page = require('./page');
+const point = require('./point');
 
 const router = express.Router();
 
-router.use('/points', points);
+router.use('/point', point);
+router.use('/page', page)
 
 router.get('/', index);
 

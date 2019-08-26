@@ -45,9 +45,7 @@
     }
 
     ctx.putImageData(imgData, 0, 0);
-
-    const child = document.getElementsByTagName('body')[0];
-    child.appendChild(canvas);
+    document.getElementsByTagName('body')[0].appendChild(canvas);
   } catch (error) {
     console.error(error)
   }

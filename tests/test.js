@@ -1,1 +1,1 @@
-console.log(-3%10);
+console.log(Date.now() % 86400000);
