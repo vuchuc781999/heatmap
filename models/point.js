@@ -17,11 +17,6 @@ const pointSchema = new Schema({
     type: Number,
     min: 0,
     required: true
-  },
-  n: {
-    type: Number,
-    min: 1,
-    default: 1
   }
 });
 

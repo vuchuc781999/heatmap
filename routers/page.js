@@ -3,6 +3,8 @@ const Page = require('../controllers/page');
 
 const router = express.Router();
 
-router.get('/', Page.createPage);
+router.get('/create', Page.createPage);
+
+router.get('/size', Page.getSize)
 
 module.exports = router;

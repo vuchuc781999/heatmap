@@ -44,4 +44,4 @@
       }
     })
   });
-})('http://localhost:5000/points', window.location.hostname, window.location.pathname);
+})('http://localhost:5000/point', window.location.hostname, window.location.pathname);

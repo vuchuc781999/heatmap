@@ -1,53 +1,49 @@
-(async (hostURL, hostname, pathname) => {
+(async (d, id, location, url, bandwidth, startColor, endColor) => {
   try {
-    const url = hostURL + '?hostname=' + hostname + '&pathname=' + pathname;
-    const res = await fetch(url);
-    const data = await res.json();
-    const coordinates = data.coordinates;
-    
-    let width = 0;
-    let height = 0;
+    const density = d.createElement('div');
+    density.setAttribute("id", id);
+    density.style.position = "absolute";
+    density.style.top = "0px";
+    density.style.left = "0px";
+    density.style.margin = "0px";
+    density.style.padding = "0px";
+    density.style.opacity = ".5";
+    density.style.display = "none";
 
-    for (let i = coordinates.length - 1; i >= 0; i--) {
-      if (coordinates[i].x > width) {
-        width = coordinates[i].x;
-      }
-      if (coordinates[i].y > height) {
-        height = coordinates[i].y;
-      }
-    }
+    const body = d.getElementsByTagName("body")[0];
+    body.appendChild(density);
 
-    const canvas = document.createElement("canvas");
-    canvas.height = height;
-    canvas.width = width;
-    canvas.style.position = "absolute";
-    canvas.style.top = "0px";
-    canvas.style.left = "0px";
-    canvas.style.display = "none";
-    canvas.id = "heat-map";
+    const hostname = location.hostname;
+    const pathname = location.pathname.replace(/\//g, '%2F');
+    const sizeInJson = await fetch(`${url}/page/size?hostname=${hostname}&pathname=${pathname}`);
+    const size = await sizeInJson.json();
+    const { width, height } = size;
 
-    const ctx = canvas.getContext("2d");
-    const imgData = ctx.createImageData(width, height);
+    const svg = d3.select("#" + id)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
 
-    for (let i = 0; i < coordinates.length; i++) {
-      const index = (coordinates[i].y * width + coordinates[i].x) * 4
-      if (!imgData.data[index + 3]) {
-        imgData.data[index + 1] = 255;
-        imgData.data[index + 3] = 255;
-      } else {
-        if (imgData.data[index] < 255) {
-          imgData.data[index] = ((imgData.data[index] / 255) * 100 + 1) / 100 * 255;
-        }
-        if (imgData.data[index + 1] > 0) {
-          imgData.data[index + 1] = ((imgData.data[index + 1] / 255) * 100 - 1) / 100 * 255;
-        }
-      }
-    }
+    d3.csv(`${url}/point?hostname=${hostname}&pathname=${pathname}&csv=true`, (data) => {
+      const color = d3.scaleLinear()
+        .domain([0, 1])
+        .range([ startColor, endColor ]);
 
-    ctx.putImageData(imgData, 0, 0);
-    document.getElementsByTagName('body')[0].appendChild(canvas);
-  } catch (error) {
-    console.error(error)
+      const densityData = d3.contourDensity()
+        .x(d => d.x)
+        .y(d => d.y)
+        .size([width, height])
+        .bandwidth(bandwidth)
+        (data)
+
+      svg.insert("g", "g")
+        .selectAll("path")
+        .data(densityData)
+        .enter().append("path")
+          .attr("d", d3.geoPath())
+          .attr("fill", function(d) { return color(d.value); });
+    });
+  } catch (err) {
+    console.error(err);
   }
-
-})('http://localhost:5000/points', window.location.hostname, window.location.pathname.replace(/\//g, '%2F'));
+})(document, "density", window.location, "http://localhost:5000", 10, "#000000", "#ffffff")

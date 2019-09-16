@@ -17,7 +17,7 @@ exports.findPage = async (hostname, pathname) => {
   }
 }
 
-exports.createPage = async (hostname, pathname, isFound = false) => {
+exports.createPage = async (hostname, pathname, width, height, isFound = false) => {
   try {
     let pageResult = false;
 
@@ -28,7 +28,9 @@ exports.createPage = async (hostname, pathname, isFound = false) => {
     if (!pageResult) {
       const newPage = new Page({
         hostname: hostname,
-        pathname: pathname
+        pathname: pathname,
+        width: width,
+        height: height
       });
 
       newPage.save();

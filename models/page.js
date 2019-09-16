@@ -12,6 +12,16 @@ const pageSchema = new Schema({
     type: String,
     default: '',
     trim: true
+  },
+  width: {
+    type: Number,
+    default:0,
+    min: 0
+  },
+  height: {
+    type: Number,
+    default: 0,
+    min: 0
   }
 });
 
