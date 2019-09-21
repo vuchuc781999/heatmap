@@ -1,4 +1,4 @@
-(async (d, id, location, url, bandwidth, startColor, endColor) => {
+(async (d, id, location, url, bandwidth) => {
   try {
     const density = d.createElement('div');
     density.setAttribute("id", id);
@@ -7,7 +7,7 @@
     density.style.left = "0px";
     density.style.margin = "0px";
     density.style.padding = "0px";
-    density.style.opacity = ".5";
+    density.style.opacity = ".75";
     density.style.display = "none";
 
     const body = d.getElementsByTagName("body")[0];
@@ -15,9 +15,18 @@
 
     const hostname = location.hostname;
     const pathname = location.pathname.replace(/\//g, '%2F');
-    const sizeInJson = await fetch(`${url}/page/size?hostname=${hostname}&pathname=${pathname}`);
-    const size = await sizeInJson.json();
-    const { width, height } = size;
+
+    let width = Math.max(
+      document.body.scrollWidth, document.documentElement.scrollWidth,
+      document.body.offsetWidth, document.documentElement.offsetWidth,
+      document.body.clientWidth, document.documentElement.clientWidth
+    );
+
+    let height = Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight, document.documentElement.offsetHeight,
+      document.body.clientHeight, document.documentElement.clientHeight
+    );
 
     const svg = d3.select("#" + id)
       .append("svg")
@@ -26,8 +35,8 @@
 
     d3.csv(`${url}/point?hostname=${hostname}&pathname=${pathname}&csv=true`, (data) => {
       const color = d3.scaleLinear()
-        .domain([0, 1])
-        .range([ startColor, endColor ]);
+        .domain([0, 0.134, 0.293, 0.5, 1])
+        .range([ "#ffffff", "#7fff7f", "#7f7fff", "#ffff7f", "#ff0000" ]);
 
       const densityData = d3.contourDensity()
         .x(d => d.x)
@@ -35,7 +44,7 @@
         .size([width, height])
         .bandwidth(bandwidth)
         (data)
-
+      
       svg.insert("g", "g")
         .selectAll("path")
         .data(densityData)
@@ -46,4 +55,4 @@
   } catch (err) {
     console.error(err);
   }
-})(document, "density", window.location, "http://localhost:5000", 10, "#000000", "#ffffff")
+})(document, "density", window.location, "http://localhost:5000", 20)

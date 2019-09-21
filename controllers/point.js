@@ -38,6 +38,7 @@ exports.updatePoint = async (req, res) => {
     page.height = height;
     await page.save();
 
+    console.log('Saved !!!')
     res.send('Updated !!!');
   } catch (err) {
     console.error(err);
